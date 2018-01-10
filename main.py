@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import time
 
 import sqlite3
 from urllib.request import urlopen, Request
@@ -9,7 +10,7 @@ import json
 import dateutil.parser
 
 DEFAULT_DB = 'bitso.sqlite'
-DEFAULT_REQUEST_INTERNAL = 1
+DEFAULT_REQUEST_INTERNAL = 30
 DEFAULT_BITSO_API_URL = 'https://api.bitso.com/v3/ticker/'
 
 def update_database(url, db_cnx):
@@ -49,8 +50,9 @@ def main():
     parser.add_argument('-d', '--database', default=DEFAULT_DB,
             help='database to store market updates, default: %s' % DEFAULT_DB)
     parser.add_argument('-i', '--interval', default=DEFAULT_REQUEST_INTERNAL,
-            help='interval in minutes to request market updates, '
-                 'default: %dmin' % DEFAULT_REQUEST_INTERNAL)
+            type=int,
+            help='interval in seconds to request market updates, '
+                 'default: %dsec' % DEFAULT_REQUEST_INTERNAL)
     parser.add_argument('-h', '--help', action='help',
             default=argparse.SUPPRESS,
             help='show this help message and exit')
@@ -59,9 +61,12 @@ def main():
 
     db_cnx = sqlite3.connect(args.database)
 
-    update_database(args.server, db_cnx)
-
-    db_cnx.close()
+    try:
+        while True:
+            update_database(args.server, db_cnx)
+            time.sleep(args.interval)
+    finally:
+        db_cnx.close()
 
 if __name__ == '__main__':
     try:
