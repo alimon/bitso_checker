@@ -45,11 +45,12 @@ def main():
             add_help=False)
 
     parser.add_argument('-s', '--server', default=DEFAULT_BITSO_API_URL,
-            help='URL of Bitso')
+            help='URL of Bitso, default: %s' % DEFAULT_BITSO_API_URL)
     parser.add_argument('-d', '--database', default=DEFAULT_DB,
-            help='database to store market updates')
+            help='database to store market updates, default: %s' % DEFAULT_DB)
     parser.add_argument('-i', '--interval', default=DEFAULT_REQUEST_INTERNAL,
-            help='interval in minutes to request market updates')
+            help='interval in minutes to request market updates, '
+                 'default: %dmin' % DEFAULT_REQUEST_INTERNAL)
     parser.add_argument('-h', '--help', action='help',
             default=argparse.SUPPRESS,
             help='show this help message and exit')
