@@ -3,6 +3,7 @@
 import sys
 import argparse
 import time
+import datetime
 
 import sqlite3
 from urllib.request import urlopen, Request
@@ -19,6 +20,7 @@ def update_database(url, db_cnx):
 
     ticker_json = json.loads(ticker.decode('utf-8'))
 
+    stime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if ticker_json['success'] == True:
         c = db_cnx.cursor()
         for entry in ticker_json['payload']:
@@ -38,7 +40,10 @@ def update_database(url, db_cnx):
                        entry['ask'], entry['low'], entry['last'],
                        entry['bid'], entry['high'], entry['vwap']))
 
+            print("%s: SUCCEED: %s" % (stime, str(entry)))
         db_cnx.commit()
+    else:
+        print("%s: FAILED" % stime)
 
 def main():
     parser = argparse.ArgumentParser(
