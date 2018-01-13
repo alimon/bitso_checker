@@ -15,8 +15,12 @@ DEFAULT_REQUEST_INTERNAL = 30
 DEFAULT_BITSO_API_URL = 'https://api.bitso.com/v3/ticker/'
 
 def update_database(url, db_cnx):
-    res = urlopen(Request(url, headers={'User-Agent': 'Mozilla'}))
-    ticker = res.read()
+    try:
+        res = urlopen(Request(url, headers={'User-Agent': 'Mozilla'}))
+        ticker = res.read()
+    except Exception as e:
+        print(e)
+        return
 
     ticker_json = json.loads(ticker.decode('utf-8'))
 
